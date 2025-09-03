@@ -1,7 +1,7 @@
 import express from "express"; // nạp express
 import bodyParser from "body-parser"; // nạp body-parser lấy tham số từ client /user?id=7
 import viewEngine from "./config/viewEngine"; // nạp viewEngine
-import initWebRoutes from "./route/web"; // nạp file web từ Route
+import initWebRoutes from "./routes/web"; // nạp file web từ Route
 import connectDB from "./config/configdb";
 require('dotenv').config(); // gọi hàm config của dotenv để chạy lệnh process.env.PORT
 

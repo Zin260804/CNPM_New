@@ -22,6 +22,11 @@ const Header = () => {
             }
             : null,
         {
+            label: <Link to="/product">Products</Link>,
+            key: 'product',
+            icon: <UsergroupAddOutlined />,
+        },
+        {
             label: 'Welcome ' + (auth?.user?.email ?? ''),
             key: 'sub-menu',
             icon: <SettingOutlined />,

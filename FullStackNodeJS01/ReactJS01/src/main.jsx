@@ -13,6 +13,8 @@ import UserPage from './pages/user.jsx';
 import HomePage from './pages/home.jsx';
 import LoginPage from './pages/login.jsx';
 import { AuthWrapper } from './components/context/auth.context.jsx';
+import ProductPage from './pages/product.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
         path: "user",
         element: <UserPage />,
       },
+      {
+        path: "product",
+        element: <ProductPage />,
+      }
     ],
   },
   {

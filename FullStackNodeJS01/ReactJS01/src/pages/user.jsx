@@ -48,7 +48,7 @@ const UserPage = () => {
                 dataSource={dataSource}
                 columns={columns}
                 rowKey="_id"
-                pagination={{ pageSize: 1 }}
+                pagination={{ pageSize: 5 }}
             />
         </div>
     );
