@@ -26,6 +26,34 @@ const Header = () => {
             key: 'product',
             icon: <UsergroupAddOutlined />,
         },
+        // {
+        //     label: 'Category ',
+        //     key: 'category',
+        //     icon: <SettingOutlined />,
+        //     children: [
+        //
+        //         {
+        //             label: (
+        //                 <span
+        //                     onClick={() => {
+        //                         localStorage.clear('access_token');
+        //                         setAuth({
+        //                             isAuthenticated: false,
+        //                             user: {
+        //                                 email: '',
+        //                                 name: '',
+        //                             },
+        //                         });
+        //                         navigate('/');
+        //                     }}
+        //                 >
+        //                     Shoes
+        //                 </span>
+        //             ),
+        //             key: 'logout',
+        //         }
+        //     ],
+        // },
         {
             label: 'Welcome ' + (auth?.user?.email ?? ''),
             key: 'sub-menu',

@@ -5,6 +5,7 @@ const configViewEngine = require('./config/viewEngine');
 const apiRoutes = require('./routes/api');
 const connection = require('./config/database');
 const getHomepage = require('./controllers/homeController');
+const syncProductsToES = require('./sync');
 const cors = require('cors');
 
 //cấu hình app, nếu tìm thấy port trong env, không thì trả về 8888
@@ -34,6 +35,11 @@ app.use('/v1/api/', apiRoutes);
         //kết nối database using mongoose
         await connection();
         //lắng nghe port trong env
+
+        // 👉 gọi sync ở đây
+
+        await syncProductsToES();
+
         app.listen(port, () => {
             console.log(`Backend Nodejs App listening on port ${port}`);
         });

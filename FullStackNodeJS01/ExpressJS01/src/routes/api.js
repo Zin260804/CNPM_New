@@ -2,8 +2,7 @@ const express = require('express');
 const { createUser, handleLogin, getUser, getAccount } = require('../controllers/userController');
 const auth = require('../middleware/auth');
 const delay = require('../middleware/delay');
-const { getProducts } = require('../controllers/productController');
-
+const { getProducts, getProductsByCategory, searchProducts } = require('../controllers/productController');
 const routerAPI = express.Router();
 
 routerAPI.use(auth);
@@ -15,6 +14,9 @@ routerAPI.get("/", (req, res) => {
 routerAPI.post("/register", createUser);
 routerAPI.post("/login", handleLogin);
 routerAPI.get("/product", getProducts);
+routerAPI.get("/product", getProducts);
+routerAPI.get("/search", searchProducts);
+routerAPI.get("/product-category", getProductsByCategory);
 routerAPI.get("/user", getUser);
 routerAPI.get("/account", delay, getAccount);
 
