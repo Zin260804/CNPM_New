@@ -1,26 +1,34 @@
+// models/Product.js
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: 'text' },
     description: { type: String },
-    originalPrice: { type: Number, required: true }, // Giá gốc
-    currentPrice: { type: Number, required: true },  // Giá hiện tại
-    promotion: { type: Number, default: 0 }, // Khuyến mãi (%)
+    originalPrice: { type: Number, required: true },
+    currentPrice: { type: Number, required: true },
+    promotion: { type: Number, default: 0 },
     quantity: { type: Number, default: 0 },
-    category: { type: String },
-    views: { type: Number, default: 0 }, // Lượt xem
+    category: { type: String, index: true }, // nếu có Category model, đổi sang ObjectId ref: 'Category'
+    tags: [{ type: String, index: true }],   // giúp gợi ý "tương tự"
+    views: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
-// Middleware: tự tính currentPrice nếu có promotion
+// auto-calc currentPrice theo promotion
 productSchema.pre('save', function (next) {
     if (this.promotion > 0 && this.originalPrice) {
         this.currentPrice = Math.round(this.originalPrice * (1 - this.promotion / 100));
     }
+    this.updatedAt = new Date();
     next();
 });
 
-const Product = mongoose.model('Product', productSchema);
+// indexes hữu ích
+productSchema.index({ name: 'text', description: 'text', tags: 1, category: 1 });
 
+const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

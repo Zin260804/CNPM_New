@@ -1,9 +1,10 @@
-import { Checkbox, Card, Select, InputNumber } from 'antd';
+import {Checkbox, Card, Select, InputNumber, Button} from 'antd';
 import { useState } from 'react';
 
 const { Option } = Select;
 
-const ProductFilter = ({ setFilter }) => {
+const ProductFilter = (props) => {
+    const {setFilter,listCategories} = props;
     const [priceValue, setPriceValue] = useState("");
     const [categoryValue, setCategoryValue] = useState("");
     const [sortBy, setSortBy] = useState(""); // views hoặc currentPrice
@@ -29,6 +30,21 @@ const ProductFilter = ({ setFilter }) => {
             maxPrice,
             page: 1
         }));
+    };
+
+    const handleResetFilters = () => {
+        setPriceValue("");
+        setCategoryValue("");
+        setSortBy("");
+        setSortOrder("desc");
+        setPromotionRange({ min: "", max: "" });
+
+        setFilter({
+            page: 1,
+            q: "",
+        });
+
+        props.setTextSearch("");
     };
 
     // ---- Filter Danh mục ----
@@ -88,7 +104,7 @@ const ProductFilter = ({ setFilter }) => {
             {/* Danh mục */}
             <div style={{ marginBottom: 16 }}>
                 <strong>Danh mục:</strong>
-                {["Racket","Shuttlecock","Shoes","Accessories"].map(val => (
+                {listCategories.map(val => (
                     <div key={val}>
                         <Checkbox
                             value={val}
@@ -136,6 +152,12 @@ const ProductFilter = ({ setFilter }) => {
                         <Option value="desc">Giảm dần</Option>
                     </Select>
                 </div>
+            </div>
+
+            <div style={{ marginTop: 16, textAlign: 'left' }}>
+                <Button danger  onClick={handleResetFilters}>
+                    Bỏ chọn tất cả
+                </Button>
             </div>
         </Card>
     );

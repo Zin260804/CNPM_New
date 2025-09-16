@@ -1,0 +1,36 @@
+/* ----------------------
+   Custom styles for Cart
+   ---------------------- */
+
+/* Thêm hiệu ứng hover cho card sản phẩm */
+.cart-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Style cho input số lượng */
+.cart-input {
+    text-align: center;
+    -moz-appearance: textfield;
+}
+.cart-input::-webkit-inner-spin-button,
+.cart-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Style cho giỏ hàng trống */
+.cart-empty {
+    text-align: center;
+    font-style: italic;
+    color: #6b7280; /* Tailwind gray-500 */
+    padding: 1rem;
+}
+
+/* Style cho modal overlay (nếu muốn custom thêm ngoài Tailwind) */
+.cart-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}

@@ -1,4 +1,4 @@
-const { getProductsService, getProductsByCategoryService } = require("../services/productService");
+const { getProductsService, getProductsByCategoryService, getCategoriesService } = require("../services/productService");
 const { searchProductsService } = require("../services/searchService");
 
 
@@ -18,6 +18,11 @@ const getProductsByCategory = async (req, res) => {
     const data = await getProductsByCategoryService(category, page, limit);
     return res.status(200).json(data);
 };
+
+const getCategories = async (req, res) => {
+    const data = await getCategoriesService();
+    return res.status(200).json(data);
+}
 
 const searchProducts = async (req, res) => {
     try {
@@ -74,4 +79,5 @@ module.exports = {
     searchProducts,
     getProducts,
     getProductsByCategory,
+    getCategories,
 };

@@ -5,13 +5,45 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
         const must = [];
         const filter = [];
 
-        // ✅ Fuzzy search theo tên hoặc mô tả
+        // ✅ Fuzzy search + prefix fallback
+        // 🔍 Search logic
         if (query && query.trim() !== "") {
             must.push({
-                multi_match: {
-                    query,
-                    fields: ["name^3", "description"], // name quan trọng hơn description
-                    fuzziness: "AUTO"
+                bool: {
+                    should: [
+                        // 1. Ưu tiên match chính xác theo tên
+                        {
+                            match: {
+                                "name": {
+                                    query,
+                                    boost: 3
+                                }
+                            }
+                        },
+                        // 2. Fuzzy search (sai chính tả)
+                        {
+                            multi_match: {
+                                query,
+                                fields: ["name^3", "description"],
+                                fuzziness: "AUTO"
+                            }
+                        },
+                        // 3. Prefix search (autocomplete: "yo" → "Yonex")
+                        {
+                            match_phrase_prefix: {
+                                "name": {
+                                    query,
+                                    boost: 2
+                                }
+                            }
+                        },
+                        // 4. Wildcard fallback ("on" → "Yonex")
+                        {
+                            wildcard: {
+                                "name.keyword": `*${query.toLowerCase()}*`
+                            }
+                        }
+                    ]
                 }
             });
         }
@@ -21,7 +53,7 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
             filter.push({ term: { "category.keyword": filters.category } });
         }
 
-        // ✅ Lọc theo khoảng giá (currentPrice)
+        // ✅ Lọc theo khoảng giá
         if (filters.minPrice || filters.maxPrice) {
             filter.push({
                 range: {
@@ -33,7 +65,7 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
             });
         }
 
-        // ✅ Lọc theo khoảng khuyến mãi (%)
+        // ✅ Lọc theo khuyến mãi
         if (filters.minPromotion || filters.maxPromotion) {
             filter.push({
                 range: {
@@ -45,12 +77,11 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
             });
         }
 
-        // ✅ Sort (views tăng dần / giảm dần)
+        // ✅ Sort
         let sortOption = [];
         if (sort.by === "views" && sort.order) {
             sortOption.push({ views: { order: sort.order } });
         } else {
-            // mặc định sắp xếp theo ngày tạo mới nhất
             sortOption.push({ createdAt: { order: "desc" } });
         }
 
@@ -77,16 +108,7 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
         // ✅ Map dữ liệu trả về
         const hits = result.hits.hits.map(hit => ({
             id: hit._id,
-            name: hit._source.name,
-            description: hit._source.description,
-            category: hit._source.category,
-            originalPrice: hit._source.originalPrice,
-            currentPrice: hit._source.currentPrice,
-            promotion: hit._source.promotion,
-            views: hit._source.views,
-            quantity: hit._source.quantity,
-            createdAt: hit._source.createdAt,
-            updatedAt: hit._source.updatedAt,
+            ...hit._source,
             highlight: hit.highlight || {}
         }));
 
@@ -110,5 +132,6 @@ const searchProductsService = async (query = "", page, limit, filters = {}, sort
         };
     }
 };
+
 
 module.exports = { searchProductsService };

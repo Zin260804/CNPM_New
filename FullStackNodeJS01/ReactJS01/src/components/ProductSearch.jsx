@@ -2,7 +2,7 @@ import { Input } from 'antd';
 
 const { Search } = Input;
 
-const ProductSearch = (props) => {
+const ProductSearch = ({ value, setValue, setFilter }) => {
     return (
         <div style={{ marginBottom: 16 }}>
             <Search
@@ -11,16 +11,19 @@ const ProductSearch = (props) => {
                 enterButton="Tìm kiếm"
                 size="middle"
                 style={{ width: 400 }}
-                onSearch={(value) => {
-                    props.setFilter(prev => ({
-                        ...prev,   // giữ nguyên các giá trị khác
-                        q: value,  // chỉ cập nhật q
-                        page: 1    // reset trang về 1 nếu muốn
+                value={value}   // 👈 controlled
+                onChange={(e) => setValue(e.target.value)} // cập nhật state textSearch
+                onSearch={(val) => {
+                    setFilter(prev => ({
+                        ...prev,
+                        q: val,
+                        page: 1
                     }));
                 }}
             />
         </div>
     );
 };
+
 
 export default ProductSearch;

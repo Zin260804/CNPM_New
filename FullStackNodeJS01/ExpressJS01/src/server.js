@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const configViewEngine = require('./config/viewEngine');
 const apiRoutes = require('./routes/api');
+const productRoutes = require('./routes/products');
 const connection = require('./config/database');
 const getHomepage = require('./controllers/homeController');
 const syncProductsToES = require('./sync');
@@ -26,10 +27,9 @@ configViewEngine(app);
 const webAPI = express.Router();
 webAPI.get("/", getHomepage);
 app.use('/', webAPI);
-
 //khai báo route cho API
 app.use('/v1/api/', apiRoutes);
-
+app.use('/api/products', productRoutes);
 (async () => {
     try {
         //kết nối database using mongoose

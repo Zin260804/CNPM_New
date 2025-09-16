@@ -24,12 +24,10 @@ const getUserApi = () => {
     return axios.get(url_API);
 };
 
-const getProductsWithPaginate = (page, limit) => {
-    return axios.get(`/v1/api/product?page=${page}&limit=${limit}`);
-}
-const getProductsByCategoryWithPaginate = (category, page, limit) => {
-    return axios.get(`/v1/api/product-categoory?category=${category}page=${page}&limit=${limit}`);
-}
+const getCategories = () => {
+    const url_API = "/v1/api/categories";
+    return axios.get(url_API);
+};
 
 const searchProducts = (params) => {
     const {
@@ -61,6 +59,5 @@ export {
     loginApi,
     searchProducts,
     getUserApi,
-    getProductsWithPaginate,
-    getProductsByCategoryWithPaginate,
+    getCategories,
 };

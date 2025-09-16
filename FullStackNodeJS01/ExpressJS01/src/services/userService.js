@@ -38,6 +38,7 @@ const loginService = async (email, password) => {
             if (isMatchPassword === true) {
                 // create an access token
                 const payload = {
+                    _id: user._id.toString(),   // 👈 thêm id vào payload
                     email: user.email,
                     name: user.name,
                 };
@@ -81,6 +82,8 @@ const getUserService = async () => {
         return null;
     }
 };
+
+
 
 module.exports = {
     createUserService,

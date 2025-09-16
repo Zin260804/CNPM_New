@@ -57,8 +57,24 @@ const getProductsByCategoryService = async (category, page, limit) => {
     }
 };
 
+const getCategoriesService = async () => {
+    try {
+        const categories = await Product.distinct("category"); // lấy ra mảng category không trùng
+        return {
+            EC: 0,
+            data: categories,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EC: 1,
+            EM: "Lỗi khi lấy danh mục sản phẩm",
+        };
+    }
+};
 
 module.exports = {
     getProductsService,
     getProductsByCategoryService,
+    getCategoriesService,
 };
