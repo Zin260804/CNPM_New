@@ -1,51 +1,30 @@
-// services/metricsService.js
+// services/productMetricsService.js
 const mongoose = require('mongoose');
-const Order = require('../models/Order');
-const Comment = require('../models/Comment');
 const Product = require('../models/product');
 
-const getProductMetricsService = async (productId) => {
+const getProductStatsService = async (productId) => {
     try {
         if (!mongoose.isValidObjectId(productId)) {
-            return { EC: 1, EM: 'Invalid product id' };
+            return { EC: 1, EM: 'Invalid product id', data: null };
         }
 
-        const product = await Product.findById(productId, { views: 1 }).lean();
-        if (!product) return { EC: 1, EM: 'Product not found' };
+        const product = await Product.findById(productId, { salesCount: 1, commentsCount: 1 });
+        if (!product) {
+            return { EC: 1, EM: 'Product not found', data: null };
+        }
 
-        const pid = new mongoose.Types.ObjectId(productId);
-
-        // Unique buyers (chỉ tính đơn đã thanh toán/hợp lệ)
-        const purchaseAgg = await Order.aggregate([
-            { $match: { status: { $in: ['paid', 'completed', 'shipped'] }, 'items.product': pid } },
-            { $unwind: '$items' },
-            { $match: { 'items.product': pid } },
-            { $group: { _id: '$user', totalQty: { $sum: '$items.quantity' } } },
-            { $group: { _id: null, uniqueBuyers: { $sum: 1 }, totalPurchasedQty: { $sum: '$totalQty' } } }
-        ]);
-
-        const uniqueBuyers = purchaseAgg[0]?.uniqueBuyers || 0;
-
-        // Comments + unique commenters
-        const commentAgg = await Comment.aggregate([
-            { $match: { product: pid } },
-            { $group: { _id: '$user', count: { $sum: 1 } } },
-            { $group: { _id: null, uniqueCommenters: { $sum: 1 }, commentCount: { $sum: '$count' } } }
-        ]);
-
-        const out = {
-            purchaseCount: uniqueBuyers,
-            uniqueBuyers,
-            commentCount: commentAgg[0]?.commentCount || 0,
-            uniqueCommenters: commentAgg[0]?.uniqueCommenters || 0,
-            viewCount: product.views || 0
+        return {
+            EC: 0,
+            data: {
+                productId: productId,
+                salesCount: product.salesCount || 0,
+                commentsCount: product.commentsCount || 0,
+            },
         };
-
-        return { EC: 0, data: out };
     } catch (e) {
-        console.error('getProductMetricsService error:', e);
-        return { EC: 1, EM: 'Internal server error' };
+        console.error('getProductStatsService error:', e);
+        return { EC: 1, EM: 'Internal server error', data: null };
     }
 };
 
-module.exports = { getProductMetricsService };
+module.exports = { getProductStatsService };

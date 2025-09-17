@@ -1,10 +1,11 @@
-// controllers/productMetricsController.js
-const { getProductMetricsService } = require('../services/metricsService');
+const { getProductStatsService } = require('../services/metricsService');
 
-const getProductMetrics = async (req, res) => {
+const getProductStats = async (req, res) => {
     const productId = req.params.id;
-    const out = await getProductMetricsService(productId);
+    const out = await getProductStatsService(productId);
     return res.status(out.EC === 0 ? 200 : 400).json(out);
 };
 
-module.exports = { getProductMetrics };
+module.exports = {
+    getProductStats,
+};

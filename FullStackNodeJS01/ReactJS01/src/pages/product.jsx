@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { getCategories, searchProducts } from "../utils/api";
 import ProductFilter from "../components/ProductFilter.jsx";
 import ProductSearch from "../components/ProductSearch.jsx";
-import { getMyFavorites, toggleFavorite } from "../utils/productApi.js";
-import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import {getMyFavorites, postBuyProduct, postCommentProduct, toggleFavorite} from "../utils/productApi.js";
+import {HeartOutlined, HeartFilled, ShoppingCartOutlined, MessageOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import ViewProduct from "./ViewProduct.jsx";
 import ViewedProducts from "../components/VỉewedProducts.jsx";
@@ -38,6 +38,14 @@ const ProductPage = () => {
         currentPage: 1,
         pageSize: 10,
     });
+
+    const handleComment = async (id) => {
+        await postCommentProduct(id);
+    }
+
+    const handleBuy = async (id) => {
+        await postBuyProduct(id);
+    }
 
     const fetchCategories = async () => {
         const res = await getCategories();
@@ -207,6 +215,28 @@ const ProductPage = () => {
                                                    onClick={() => !favLoading[item.id] && handleToggleFavorite(item.id)}
                                                />
                                            ),
+
+                                           // Bình luận
+                                           <Button
+                                               key="comment"
+                                               type="text"
+                                               size="small"
+                                               icon={<MessageOutlined />}
+                                               onClick={()=>handleComment(item.id)}
+                                           >
+                                               Bình luận
+                                           </Button>,
+
+                                           // Mua
+                                           <Button
+                                               key="buy"
+                                               type="primary"
+                                               size="small"
+                                               icon={<ShoppingCartOutlined />}
+                                               onClick={()=>handleBuy(item.id)}
+                                           >
+                                               Mua
+                                           </Button>,
                                        ]}
                                        title={
                                            <div style={{ marginTop: 12, marginBottom: 12 }}>
@@ -258,10 +288,12 @@ const ProductPage = () => {
                                onShowSizeChange={handlePageSizeChange}
                            />
                        </div>
+
+                       <ViewedProducts/>
                    </Col>
                </Row>
            </div>
-           <ViewedProducts/>
+
        </>
     );
 };

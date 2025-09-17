@@ -24,7 +24,25 @@ const getSimilarProducts = (id) => {
     const url_API = `/api/products/${id}/similar`;
     return axios.get(url_API);
 };
+
+const getProductMetrics = (id) => {
+    const url_API = `/api/products/${id}/metrics`;
+    return axios.get(url_API);
+};
+
+const postBuyProduct = (id) => {
+    const url_API = `/api/products/${id}/increase-sales`;
+    return axios.post(url_API);
+};
+
+const postCommentProduct = (id) => {
+    const url_API = `/api/products/${id}/increase-comments`;
+    return axios.post(url_API);
+};
 export {
+    getProductMetrics,
+    postBuyProduct,
+    postCommentProduct,
     getViewedProduct,
     getSimilarProducts,
     toggleFavorite,

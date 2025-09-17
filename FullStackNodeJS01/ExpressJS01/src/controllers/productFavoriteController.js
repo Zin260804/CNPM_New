@@ -1,5 +1,5 @@
 // controllers/productFavoriteController.js
-const { toggleFavoriteService, getFavoritesService } = require('../services/favortiteService');
+const { toggleFavoriteService, getFavoritesService, increaseSalesService, increaseCommentsService } = require('../services/favortiteService');
 
 const toggleFavorite = async (req, res) => {
     const productId = req.params.id;
@@ -17,4 +17,20 @@ const getMyFavorites = async (req, res) => {
     return res.status(out.EC === 0 ? 200 : 400).json(out);
 };
 
-module.exports = { toggleFavorite, getMyFavorites };
+const increaseSales = async (req, res) => {
+    const productId = req.params.id;
+    const quantity = Number(req.body?.quantity) || 1;
+
+    const out = await increaseSalesService(productId, quantity);
+    return res.status(out.EC === 0 ? 200 : 400).json(out);
+};
+
+const increaseComments = async (req, res) => {
+    const productId = req.params.id;
+    const count = Number(req.body?.count) || 1;
+
+    const out = await increaseCommentsService(productId, count);
+    return res.status(out.EC === 0 ? 200 : 400).json(out);
+};
+
+module.exports = { toggleFavorite, getMyFavorites, increaseSales, increaseComments };
